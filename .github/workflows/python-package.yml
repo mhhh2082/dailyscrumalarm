@@ -1,16 +1,17 @@
-name: 디스코드 알림봇
+name: Daily Scrum Notification
 
 on:
-  schedule: # UTC+9 기준 3시 실행
-    - cron:  "0 0 * * *"
-    - cron:  "0 12 * * *"
+  schedule:
+    - cron: '0 0,12 * * *'  # 한국 시간 기준 오전 9시, 오후 9시에 트리거
 
 jobs:
-  message:
+  send-discord-notification:
     runs-on: ubuntu-latest
     steps:
-    - name: Discord Webhook Action
-      uses: tsickert/discord-webhook@v5.3.0
-      with:
-        webhook-url: ${{ https://discordapp.com/api/webhooks/1317732263777271889/PHLKT0WdNghB7ZxZ0_afuHWv-RbbPoaSpjZYzIvdxA_3RqPyIJOoTFN4V65XqvpEHEJx }}
-        content: "데일리 스크럼 시간입니다 !"
+    - name: Send Discord Notification
+      env:
+        DISCORD_WEBHOOK: ${{ https://discord.com/api/webhooks/1317732263777271889/PHLKT0WdNghB7ZxZ0_afuHWv-RbbPoaSpjZYzIvdxA_3RqPyIJOoTFN4V65XqvpEHEJx }}
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+             -d '{"content": "🕒 Daily Scrum 시간입니다! 팀원들 모두 준비해주세요."}' \
+             $DISCORD_WEBHOOK
