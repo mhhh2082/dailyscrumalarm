@@ -2,16 +2,27 @@ name: Daily Scrum Notification
 
 on:
   schedule:
-    - cron: '0 0,12 * * *'  # 한국 시간 기준 오전 9시, 오후 9시에 트리거
+    # UTC 기준으로 작성 (한국시간 - 9시간)
+    - cron: '0 0 * * *'  # UTC 00:00 (KST 09:00)
+    - cron: '0 12 * * *' # UTC 12:00 (KST 21:00)
+  workflow_dispatch:  # 수동 실행 옵션 추가
 
 jobs:
   send-discord-notification:
     runs-on: ubuntu-latest
     steps:
+    - name: Check Current Time
+      run: date
+      
     - name: Send Discord Notification
       env:
         DISCORD_WEBHOOK: ${{ https://discord.com/api/webhooks/1317732263777271889/PHLKT0WdNghB7ZxZ0_afuHWv-RbbPoaSpjZYzIvdxA_3RqPyIJOoTFN4V65XqvpEHEJx }}
       run: |
+        if [ -z "$DISCORD_WEBHOOK" ]; then
+          echo "Error: DISCORD_WEBHOOK is not set"
+          exit 1
+        fi
+        
         curl -X POST -H "Content-Type: application/json" \
              -d '{"content": "🕒 Daily Scrum 시간입니다! 팀원들 모두 준비해주세요."}' \
              $DISCORD_WEBHOOK
