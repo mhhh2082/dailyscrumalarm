@@ -16,7 +16,7 @@ jobs:
       
     - name: Send Discord Notification
       env:
-        DISCORD_WEBHOOK: ${{ https://discord.com/api/webhooks/1317732263777271889/PHLKT0WdNghB7ZxZ0_afuHWv-RbbPoaSpjZYzIvdxA_3RqPyIJOoTFN4V65XqvpEHEJx }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
       run: |
         if [ -z "$DISCORD_WEBHOOK" ]; then
           echo "Error: DISCORD_WEBHOOK is not set"
